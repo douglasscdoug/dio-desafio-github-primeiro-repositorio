@@ -2,4 +2,4 @@
 Repositorio criado para o desafio de projeto sobre git/github
 
 ## Links úteis
-[sintaxe básica makdown](https://www.markdownguide.org/basic-syntax/)
+[Sintaxe básica makdown](https://www.markdownguide.org/basic-syntax/)
