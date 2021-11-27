@@ -1,0 +1,143 @@
+﻿<!DOCTYPE html>
+<html lang="pt-br">
+	<head>
+		<meta charset="utf-8">
+		<title>Jogo - Adivinhe o número</title>
+		<style>
+			body{
+				font-family: verdana;
+				width: 50%;
+				max-width: 800px;
+				min-width: 480px;
+				margin: 0 auto;
+			}
+			.ultimoResultado{
+				color: white;
+				padding: 3px;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>Jogo - Advinhe o número</h1>
+		<p>Selecione o nível desejado</p>
+		<select id="nivel" class="nivel">
+			<option value="10" selected>Fácil</option>
+			<option value="100">Médio</option>
+			<option value="1000">Dificil</option>
+		</select>
+		<p>Nós selecionamos um número aleatório entre 1 e <span class="numeros">10</span>. Veja se consegue adivinhar em <span class="tentativas">3</span> chances ou menos. Nós lhe diremos se seu palpite foi acima ou abaixo do número gerado.
+		</p>
+		<div class="form">
+			<label for="campoPalpite">Digite seu Palpite: </label>
+			<input type="number" id="campoPalpite" class="campoPalpite">
+			<input type="submit" value="Enviar palpite" class="envioPalpite">
+		</div>
+		<div class="resultadoParas">
+			<p class="palpites"></p>
+			<p class="ultimoResultado"></p>
+			<p class="baixoOuAlto"></p>
+		</div>
+	</body>
+	<script>
+		document.getElementById("nivel").onchange = function conferirNivel(){
+			var value = document.getElementById("nivel").value;
+			if(value == 100){
+				numeros.textContent = value;
+				max = 100;
+				nroTentativas = 6;
+				tentativas.textContent = 6;
+				reiniciarNivel();	
+			}else if(value == 1000){
+				numeros.textContent = value;
+				max = 1000;
+				nroTentativas = 10;
+				tentativas.textContent = 10;
+				reiniciarNivel();
+				}else{
+				numeros.textContent = value;
+				max = 100;
+				tentativas.textContent = 3;
+				reiniciarNivel();
+			}
+		};
+		var numeros = document.querySelector('.numeros');
+		var tentativas = document.querySelector('.tentativas');
+		var nroTentativas = 3;
+		var nivel = document.querySelector('.nivel');
+		var min = 1;
+		var max = document.getElementById("nivel").value;
+		var numeroAleatorio = Math.floor(Math.random() * (max - min +1)) + min;
+		var palpites = document.querySelector('.palpites');
+		var ultimoResultado = document.querySelector('.ultimoResultado');
+		var baixoOuAlto = document.querySelector('.baixoOuAlto');
+		var envioPalpite = document.querySelector('.envioPalpite');
+		var campoPalpite = document.querySelector('.campoPalpite');
+		var contagemPalpites = 1;
+		var botaoReinicio;
+		campoPalpite.focus();
+  		function conferirPalpite() {
+    			var palpiteUsuario = Number(campoPalpite.value);
+    			if(contagemPalpites === 1) {
+      				palpites.textContent = 'Palpites anteriores: ';
+   			}
+    			palpites.textContent += palpiteUsuario + ' ';
+    			if(palpiteUsuario === numeroAleatorio) {
+      				ultimoResultado.textContent = 'Parabéns! Você acertou! O número correto é ' + numeroAleatorio;
+      				ultimoResultado.style.backgroundColor = 'green';
+      				baixoOuAlto.textContent = '';
+      				configFimDeJogo();
+    			} else if(contagemPalpites === nroTentativas) {
+      				ultimoResultado.textContent = '!!!FIM DE JOGO!!! O resultado correto era: ' + numeroAleatorio;
+      				baixoOuAlto.textContent = '';
+      				configFimDeJogo();
+    			} else {
+      				ultimoResultado.textContent = 'Errado!';
+      				ultimoResultado.style.backgroundColor = 'red';
+      				if(palpiteUsuario < numeroAleatorio) {
+       					baixoOuAlto.textContent = 'Seu palpite foi muito baixo!';
+      				} else if(palpiteUsuario > numeroAleatorio) {
+        				baixoOuAlto.textContent = 'Seu palpite foi muito alto!';
+      				}
+    			}
+    			contagemPalpites++;
+    			campoPalpite.value = '';
+    			campoPalpite.focus();
+  			}
+  			envioPalpite.addEventListener('click', conferirPalpite);
+  			function configFimDeJogo() {
+    				campoPalpite.disabled = true;
+    				envioPalpite.disabled = true;
+				nivel.disabled = true;
+    				botaoReinicio = document.createElement('button');
+    				botaoReinicio.textContent = 'Iniciar novo jogo';
+    				document.body.appendChild(botaoReinicio);
+    				botaoReinicio.addEventListener('click', reiniciarJogo);
+  			}
+  			function reiniciarJogo() {
+    				contagemPalpites = 1;
+    				var reiniciarParas = document.querySelectorAll('.resultadoParas p');
+    				for(var i = 0 ; i < reiniciarParas.length ; i++) {
+      					reiniciarParas[i].textContent = '';
+    				}
+    				botaoReinicio.parentNode.removeChild(botaoReinicio);
+    				campoPalpite.disabled = false;
+    				envioPalpite.disabled = false;
+				nivel.disabled = false;
+    				campoPalpite.value = '';
+    				campoPalpite.focus();
+    				ultimoResultado.style.backgroundColor = 'white';
+				ultimoResultado.value = '';
+    				numeroAleatorio = Math.floor(Math.random() * (max - min +1)) + min;
+  			}
+			function reiniciarNivel(){
+				contagemPalpites = 1;
+				ultimoResultado.style.backgroundColor = 'white';
+				ultimoResultado.value = '';
+				campoPalpite.value = '';
+    				campoPalpite.focus();
+				palpites.textContent = '';
+				baixoOuAlto.textContent = ''
+    				numeroAleatorio = Math.floor(Math.random() * (max - min +1)) + min;
+			}
+</script>
+</html>
